@@ -1,0 +1,387 @@
+doctype html
+html(lang='en')
+head
+    meta(charset='utf-8')
+    title Browserify and the Holy Grail of Web Development
+    meta(name='description', content='A framework for easily creating beautiful presentations using HTML')
+    meta(name='author', content='Hakim El Hattab')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    link(rel='stylesheet', href='css/reveal.min.css')
+    link(rel='stylesheet', href='css/custom.css')
+    link#theme(rel='stylesheet', href='css/theme/default.css')
+    //
+       For syntax highlighting 
+    link(rel='stylesheet', href='lib/css/zenburn.css')
+    //
+       If the query includes 'print-pdf', include the PDF print sheet 
+    script.
+      if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    //if lt IE 9
+      script(src='lib/js/html5shiv.js')
+  body
+    .reveal
+      // Any section element inside of this container is displayed as a slide 
+      .slides
+        section
+          img.img-clean(src='/img/browserify-word.png')
+          h3.title.harryP And the Holy Grail of Web Development
+          img.img-clean(src='/img/browserify-logo.png')
+        section(data-markdown)
+          script(type='text/template').
+            ## My Name's David
+            And my stack is terrible.
+        section(data-background='/img/varoot.jpg')
+          section
+          section(data-markdown)
+            script(type='text/template').
+              > "We're not really using node.js right." -- Varoot
+          section(data-markdown)
+            script(type='text/template').
+              > "Wasn't the whole point of using javascript on the backend so that we could share front-end and back-end code?" -- Varoot
+        section
+          section(data-markdown)
+            script(type='text/template').
+              ![Angry](/img/derp-angry.jpg)
+              ## No!
+          section(data-markdown)
+            script(type='text/template').
+              ## Wait.
+          section(data-markdown)
+            script(type='text/template').
+              ![Sheepish](/img/sheepish.jpg)
+              ## Yes.
+        section
+          h2 D-R-Y
+          h6 (Why are we still doing things twice?)
+        section
+          section
+            h2 HTML Rendering
+          section(data-markdown)
+            script(type='text/template').
+              ## Backend
+              ```jade
+                .media
+                  if attachment.html != null && attachment.html.m != null
+                    .work-attachment-thumbnail.m.pull-left
+                      != attachment.html.m
+                  else if attachment.thumbs != null && attachment.thumbs.m != null
+                    .work-attachment-thumbnail.m.pull-left
+                      img.media-object(src=attachment.thumbs.m, alt="Attachment thumbnail")
+                  else
+                    .work-attachment-loading.m.pull-left
+              ```
+
+              ## Frontend
+              ```ejs
+                <% if (_profilePhoto && _profilePhoto.path) { %>
+                  <a href='#' onfocus='makeProfPicOpaque()' onblur='makeProfPicTransparent()' data-toggle='dropdown'><i class='icon-editpencil'></i>Change <b class='caret'></b></a>
+                  <ul class='dropdown-menu'>
+                    <li><a href='#' onfocus='makeProfPicOpaque()' class='student-view-modal-profile-photo-upload'>Upload photo</a></li>
+                    <li><a href='#' onfocus='makeProfPicOpaque()' class='student-view-modal-profile-photo-modify'>Edit current photo</a></li>
+                    <li><a href='#' onfocus='makeProfPicOpaque()' onblur='makeProfPicTransparent()' class='student-view-modal-profile-photo-remove'>Remove</a></li>
+                  </ul>
+                <% } else { %>
+                  <a href='#' onfocus='makeProfPicOpaque()' onblur='makeProfPicTransparent()' class='student-view-modal-profile-photo-upload'><i class='icon-editpencil'></i>Upload</a>
+                <% } %>
+              ```
+          section
+            h2 This is all fine and dandy...
+            h3.fragment Until your frontend dev needs a change to a backend-generated view...
+            h4.fragment And then...
+          section(data-background="/img/youShallNotPass.gif")
+          section
+            h2 This is broken.
+        section
+          section
+            h2 Validation
+            p.fragment Take emails, for example.
+          section
+            form#email-form
+              label
+                p Please enter your email address:
+                p
+                  input(type='text')
+              input(type='submit', value="Go!")
+          section
+            p Sorry. That's not a valid e-mail address. Please hit the back button on your browser.
+          section
+            img(src='/img/darthvadernooo.jpg', style="width:100%")
+            p When you hit the back button and everything that you just filled out is gone.
+            iframe(src='http://www.noooooo.info/')
+          section
+            blockquote That's easy! I'll just copy and paste the validation to my client! -- You
+          section(data-markdown)
+            script(type='text/template').
+              ```
+                (?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
+                )+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
+                \r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(
+                ?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ 
+                \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
+                31]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\
+                ](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+
+                (?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:
+                (?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z
+                |(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)
+                ?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\
+                r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[
+                 \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)
+                ?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t]
+                )*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[
+                 \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*
+                )(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
+                )+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)
+                *:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+
+                |\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r
+                \n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:
+                \r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t
+                ]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031
+                ]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](
+                ?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?
+                :(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?
+                :\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?
+                :(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?
+                [ \t]))*"(?:(?:\r\n)?[ \t])*)*:(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] 
+                \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|
+                \\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>
+                @,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"
+                (?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t]
+                )*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+                ".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?
+                :[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[
+                \]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-
+                \031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(
+                ?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;
+                :\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([
+                ^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\"
+                .\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\
+                ]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\
+                [\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\
+                r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] 
+                \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]
+                |\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \0
+                00-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\
+                .|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,
+                ;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?
+                :[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*
+                (?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".
+                \[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[
+                ^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]
+                ]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)(?:,\s*(
+                ?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+                ".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(
+                ?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[
+                \["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t
+                ])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t
+                ])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?
+                :\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|
+                \Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:
+                [^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\
+                ]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)
+                ?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["
+                ()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)
+                ?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>
+                @,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[
+                 \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,
+                ;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t]
+                )*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+                ".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?
+                (?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".
+                \[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:
+                \r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\[
+                "()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])
+                *))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])
+                +|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\
+                .(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z
+                |(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(
+                ?:\r\n)?[ \t])*))*)?;\s*)
+              ```
+              *RFC822*
+
+              *(this is 6,344 characters, btw)*
+          section
+            p So you're telling me you're going to copy and paste that?
+            img(src='/img/skepticalKid.jpg')
+            p.fragment For 
+              em every 
+              | validation?
+          section
+            form#email-form
+              label
+                p Please enter your email address:
+                p
+                  input(type='text')
+              label
+                p Please enter your phone number (international or otherwise):
+                p
+                  input(type='text')
+              label
+                p Please enter your driver's license number (which vary in format and length by state to state):
+                p
+                  input(type='text')
+              label
+                p Please enter your state:
+                p
+                  input(type='text')
+              label
+                p Please enter your country:
+                p
+                  input(type='text')
+              input(type='submit', value="Go!")
+          section
+            p If you don't want your users to feel this
+            img(src='img/squirrelno.jpg')
+          section
+            p Then get ready to do a lot of this
+            img(src='img/copy-paste.jpg')
+            p.fragment But what if your validations change?
+            p.fragment Or your conditions change?
+          section
+            h2 This, too, is broken.
+        section
+          h2 Model Schemas
+        section
+          h2 Routing for Ajax
+        section
+          h2 Other Important Things That You Don't Have The Patience to Ctrl-C Ctrl-V Every Single Time
+        section
+          section
+            h1 Enter 
+              img.img-clean.img-mid(src='/img/browserify-word.png')
+          section
+            p Browserify allows you to use node.js style 
+              code require
+              | s in the browser.
+            .fragment
+              p For example:
+              pre
+                code.js
+                  | $ = require('jquery');
+                  | _ = require('underscore');
+        section
+          section
+            h2 How does it work?
+          section
+            h4 Step 1
+            p In the console
+            pre
+              code.bash npm install --save jquery # This downloads jQuery and places it in the correct folder.
+            .fragment
+              h4 Step 2
+              p In your script.js
+              pre
+                code.js $ = require('jquery') // Make jquery available at `$`
+            .fragment
+              h4 Step 3
+              p Back in the console
+              pre
+                code.bash browserify script.js > bundle.js # This builds your frontend bundle
+          section
+            h2 That's it!
+            p Now just add bundle.js to your HTML and you can use 
+              code jQuery
+              |  at 
+              code $
+              | .
+            p.fragment
+              img(src='/img/successkid.jpg')
+        section
+          blockquote But then I need to use this NPM thing? -- You
+          .fragment
+            p NPM is actually pretty amazing, but just in case you don't want to use it...
+        section
+          section
+            h2 Local files!
+          section
+            p You can 
+              code require
+              |  local files the same way that you 
+              code require
+              |  NPM'ed files.
+            pre
+              code.js validate = require('../src/validate')
+        section
+          section(data-background='/img/hold-up.png')
+            h1 HOLD UP
+            //- img(src='/img/hold-up.png')
+          section
+            p You just included arbitrary code, from 
+              em ANYWHERE IN YOUR CODEBASE,
+              |  to be used on the frontend.
+        section
+          h1 Implication 1: Sharing Code
+        section
+          section
+            p Browserify allows you to use the exact same code in the client that you use in your server.
+          section
+            p Want that validation from your backend?
+            p.fragment
+              code require
+              |  it.
+          section
+            p Want that html rendering logic from your backend?
+            p.fragment
+              code require
+              |  it.
+          section
+            p Want pizza?
+            .fragment
+              p
+                img(src='/img/Dominos-Pizza.jpg')
+              p Voice Ordering OMGAH!
+        section(data-background='img/do-here.jpg')
+          h1 So What Exactly Does It Do?
+        section
+          h2 So What Exactly Does It Do?
+          ol
+            li Browserify parses your client-side file for 
+              code require
+              |  statements.
+            li.fragment It finds all of your file's dependencies and builds a dependency tree.
+            li.fragment It concatenates all the files into a bundle and handles all of the connections for you.
+            li.fragment After you Browserify, all you have to do it include your entry file into your HTML and you're all done.
+        section
+          blockquote Great. So Browserify only matters to me if I use node.js, right? -- You
+        section(data-background='/img/wrong.gif')
+        section
+          h1 Implication 2: Dependency Management
+        section
+          section
+            p Browserify enables you to manage your dependencies in the browser using some fantastic tools.
+          section
+            h2 Common.js
+          section
+            p
+              img(src='/img/npmallthethings.jpg')
+        section
+          section
+            h1 Is it too good to be true?
+            p.fragment Well... a little bit.
+          section
+            h2 Build Step
+        section
+          h1 Demo Time!
+        section(data-background='/img/brooklynninenineparty.gif')
+          h1 Thank you!
+          hr
+          p David Jsa
+          p 
+            img.img-clean.img-mid(src='/img/googlemail.png')
+            | david@seelio.com
+          p 
+            img.img-clean.img-mid(src='/img/twitter_logo_blue.png')
+            | @kyriesent
+
+    script(src='lib/js/head.min.js')
+    script(src='js/reveal.min.js')
+    script(src='js/zepto.min.js')
+    script(src='js/main.js')
+    script(src="//localhost:35729/livereload.js")
